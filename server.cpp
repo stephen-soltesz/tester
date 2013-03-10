@@ -18,13 +18,6 @@ using namespace boost::posix_time;
 using boost::asio::ip::tcp;
 #include "lib.hpp"
 
-std::string make_daytime_string()
-{
-    using namespace std; // For time_t, time and ctime;
-    time_t now = time(0);
-    return ctime(&now);
-}
-
 int main()
 {
     ptime t1,t2;
@@ -49,6 +42,7 @@ int main()
                 std::cout  << "error receiving direction" << std::endl;
                 continue;
             }
+            time = min(time, 30);
             std::cout << "Requested: <time>: " << time << 
                          " <direction>: " << direction << std::endl;
 
@@ -64,11 +58,9 @@ int main()
             t2 = get_pts();
             std::cout << "done" << std::endl;
             status(get_diff(t1,t2), total);
-            //boost::asio::write(socket, boost::asio::buffer(buf), boost::asio::transfer_all(), ignored_error);
         }
-    }
-    catch (std::exception& e)
-    {
+
+    } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 

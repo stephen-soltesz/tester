@@ -53,13 +53,13 @@ int main(int argc, char* argv[])
 
         tcp::socket socket(io_service);
         boost::system::error_code error = boost::asio::error::host_not_found;
-        while (error && endpoint_iterator != end)
-        {
+        while (error && endpoint_iterator != end) {
             socket.close();
             socket.connect(*endpoint_iterator++, error);
         }
-        if (error)
+        if (error) {
             throw boost::system::system_error(error);
+        }
 
         std::cout  << "sending <time>: " << time;
         std::cout  << " <direction>: " << argv[2] << std::endl;
@@ -84,9 +84,8 @@ int main(int argc, char* argv[])
         t2=get_pts();
         std::cout << "done" << std::endl;
         status(get_diff(t1,t2), total);
-    }
-    catch (std::exception& e)
-    {
+
+    } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 

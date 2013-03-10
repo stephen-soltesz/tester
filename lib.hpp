@@ -12,3 +12,4 @@ int recv_value(tcp::socket& socket, uint32_t *value);
 #define DIRECTION_CLIENT_UPLOAD     1
 #define DIRECTION_CLIENT_DOWNLOAD   2
 #define CLIENT_VERSION              "0001"
+#define min(x,y)                    ( (x) < (y) ? (x) : (y) )
