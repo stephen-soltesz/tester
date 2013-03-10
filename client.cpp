@@ -48,8 +48,8 @@ int main(int argc, char* argv[])
         t1=get_ts();
         total = recv_data(socket, 10);
         t2=get_ts();
-        status(t2-t1, total);
         std::cout << "done" << std::endl;
+        status(t2-t1, total);
     }
     catch (std::exception& e)
     {

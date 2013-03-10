@@ -47,6 +47,7 @@ int main()
             t1 = get_ts();
             total = send_data(socket, 10);
             t2 = get_ts();
+            std::cout << "done" << std::endl;
             status(t2-t1, total);
             //boost::asio::write(socket, boost::asio::buffer(buf), boost::asio::transfer_all(), ignored_error);
         }
