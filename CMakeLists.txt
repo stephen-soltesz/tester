@@ -10,8 +10,10 @@ if(WIN32)
 endif(WIN32)
 
 set(Boost_USE_STATIC_LIBS   ON)
+set(Boost_USE_STATIC_RUNTIME   ON)
 set(Boost_USE_MULTITHREADED ON)
-find_package( Boost COMPONENTS system )
+#find_package( Boost COMPONENTS system )
+find_package( Boost )
 
 if (Boost_FOUND) 
     include_directories(${Boost_INCLUDE_DIRS})
@@ -27,6 +29,7 @@ endif()
 
 if(WIN32)
     message("What compiler flags do we want?")
+    add_definitions(-D_WIN32_WINNT=0x0501)
 else()
     add_definitions(-g -O2 -fsigned-char -Wall -Wshadow 
 		        -Wpointer-arith -Wcast-qual -Winline -Werror)

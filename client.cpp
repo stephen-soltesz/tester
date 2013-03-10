@@ -11,13 +11,13 @@
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
-#include <sys/time.h>
+//#include <sys/time.h>
 #include <stdio.h>
 
 using namespace boost::posix_time;
 using boost::asio::ip::tcp;
 #include "lib.hpp"
-
+#define _ITERATOR_DEBUG_LEVEL 0
 int main(int argc, char* argv[])
 {
     ptime t1,t2;
