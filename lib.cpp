@@ -3,6 +3,7 @@
 #include <boost/asio.hpp>
 #include <stdio.h>
 #include <boost/date_time.hpp>
+#include <boost/algorithm/string.hpp>
 
 using namespace boost::posix_time;
 using boost::asio::ip::tcp;
@@ -15,6 +16,54 @@ ptime get_pts() {
 double get_diff(ptime t1, ptime t2) {
     time_duration td = t2-t1;
     return td.total_microseconds()/1.0e6;
+}
+
+int send_version(tcp::socket& socket) {
+    return sure_send(socket, CLIENT_VERSION, sizeof(CLIENT_VERSION));
+}
+int check_client_version(tcp::socket& socket) {
+    boost::array<char, sizeof(CLIENT_VERSION)>    data;
+    int     ret=0;
+    ret = sure_recv(socket, data.data(), data.size());
+    if ( ret != OK ) {
+        return -1;
+    }
+    if ( boost::iequals(CLIENT_VERSION, data.data()) == 1 ){
+        return OK;
+    }
+    return -1;
+}
+
+int sure_recv(tcp::socket& socket, void *data, std::size_t size) {
+
+    boost::system::error_code       error;
+    std::size_t                     ret = 0;
+
+    ret = socket.receive(boost::asio::buffer(data, size), 0, error);
+    if ( ret != size ) {
+        if ( error && error != boost::asio::error::eof) {
+            std::cout << error.message() << std::endl;
+        }
+        return -1;
+    }
+    return OK;
+}
+
+/* returns success or failure. */
+int sure_send(tcp::socket& socket, const void *data, std::size_t size) {
+
+    boost::system::error_code       error;
+    std::size_t                     ret = 0;
+
+    ret = socket.send(boost::asio::buffer(data, size), 0, error);
+    if ( ret != size ) {
+        if ( error && error != boost::asio::error::eof) {
+            std::cout << error.message() << std::endl;
+        }
+        return -1;
+    }
+    return OK;
+
 }
 
 int send_value(tcp::socket& socket, uint32_t value) {

@@ -63,6 +63,10 @@ int main(int argc, char* argv[])
 
         std::cout  << "sending <time>: " << time;
         std::cout  << " <direction>: " << argv[2] << std::endl;
+        if ( send_version(socket) != OK ) {
+            std::cout  << "failed to send client version" << std::endl;
+            return 1;
+        }
         if ( send_value(socket, time) != OK ) {
             std::cout  << "error sending data" << std::endl;
             return 1;
