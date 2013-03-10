@@ -29,28 +29,38 @@ int main()
 {
     ptime t1,t2;
     std::size_t total;
-    uint32_t value;
+    uint32_t time=0;
+    uint32_t direction=0;
     try
     {
         boost::asio::io_service io_service;
+        tcp::acceptor           acceptor(io_service, tcp::endpoint(tcp::v4(), 1313));
 
-        tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 1313));
-
-        //boost::array<char, 1024> buf;
         for (;;)
         {
-            tcp::socket socket(io_service);
+            tcp::socket         socket(io_service);
             acceptor.accept(socket);
 
-            //std::string message = make_daytime_string();
-            //boost::system::error_code ignored_error;
-            std::cout << "staring to send 10M" << std::endl;
-            if ( recv_value(socket, &value) != OK ) {
-                std::cout  << "error sending data" << std::endl;
+            if ( recv_value(socket, &time) != OK ) {
+                std::cout  << "error receiving duration" << std::endl;
+                continue;
             }
-            std::cout  << "received: " << value << std::endl;
+            if ( recv_value(socket, &direction) != OK ) {
+                std::cout  << "error receiving direction" << std::endl;
+                continue;
+            }
+            std::cout << "Requested: <time>: " << time << 
+                         " <direction>: " << direction << std::endl;
+
             t1 = get_pts();
-            total = send_data(socket, 10);
+            if ( direction == DIRECTION_CLIENT_UPLOAD ) {
+                total = recv_data(socket, time);
+            } else if ( direction == DIRECTION_CLIENT_DOWNLOAD ) {
+                total = send_data(socket, time);
+            } else {
+                std::cerr << "Error: unknown direction: " << direction << std::endl;
+                continue;
+            }
             t2 = get_pts();
             std::cout << "done" << std::endl;
             status(get_diff(t1,t2), total);
