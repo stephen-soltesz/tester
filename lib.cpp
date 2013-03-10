@@ -17,6 +17,37 @@ double get_diff(ptime t1, ptime t2) {
     return td.total_microseconds()/1.0e6;
 }
 
+int send_value(tcp::socket& socket, uint32_t value) {
+    boost::system::error_code       error;
+    uint32_t                        n_value=0;
+    int                             ret=0;
+    n_value = htonl(value); 
+    ret = socket.send(boost::asio::buffer(&n_value, sizeof(n_value)), 0, error);
+    if ( ret != sizeof(uint32_t) ) {
+        if ( error && error != boost::asio::error::eof) {
+            std::cout << error << std::endl;
+        }
+        return -1;
+    }
+    return OK;
+}
+
+int recv_value(tcp::socket& socket, uint32_t *value) {
+    boost::system::error_code       error;
+    uint32_t                        n_value=0;
+    int                             ret = 0;
+    ret = socket.receive(boost::asio::buffer(&n_value, sizeof(n_value)), 0, error);
+    if ( ret != sizeof(uint32_t) ) {
+        if ( error && error != boost::asio::error::eof) {
+            std::cout << error << std::endl;
+        }
+        return -1;
+    }
+    *value = ntohl(n_value);
+    return OK;
+}
+
+
 double get_ts() {
 /*    struct timeval tv1; 
     gettimeofday(&tv1, NULL);
@@ -24,17 +55,15 @@ double get_ts() {
     return 0;
 } 
 #ifdef WIN32
-    #define SIZEOF(x) sizeof(x)
     #define SNPRINTF _snprintf_s
 #else
-    #define SIZEOF(x) sizeof(x)
     #define SNPRINTF snprintf
 #endif
 
 void status(double tdiff, std::size_t amount) {
     // convert size_t to %lld for cross-platform compatibility with printf()
     char buf[128];
-    SNPRINTF(buf, SIZEOF(buf), "% 7.3f sec, %8lld bytes -- %7.3f Mbps", 
+    SNPRINTF(buf, sizeof(buf), "% 7.3f sec, %8lld bytes -- %7.3f Mbps", 
              tdiff, ((long long)amount), ((8.0*amount)/tdiff)/1.0e6);
     std::cout << std::string(buf) << std::endl;
     return;

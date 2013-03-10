@@ -44,6 +44,9 @@ int main(int argc, char* argv[])
         if (error)
             throw boost::system::system_error(error);
 
+        if ( send_value(socket, 12) != OK ) {
+            std::cout  << "error sending data" << std::endl;
+        }
         t1=get_pts();
         total = recv_data(socket, 10);
         t2=get_pts();

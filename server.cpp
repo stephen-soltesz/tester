@@ -29,6 +29,7 @@ int main()
 {
     ptime t1,t2;
     std::size_t total;
+    uint32_t value;
     try
     {
         boost::asio::io_service io_service;
@@ -44,6 +45,10 @@ int main()
             //std::string message = make_daytime_string();
             //boost::system::error_code ignored_error;
             std::cout << "staring to send 10M" << std::endl;
+            if ( recv_value(socket, &value) != OK ) {
+                std::cout  << "error sending data" << std::endl;
+            }
+            std::cout  << "received: " << value << std::endl;
             t1 = get_pts();
             total = send_data(socket, 10);
             t2 = get_pts();
