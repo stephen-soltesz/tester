@@ -13,14 +13,14 @@
 #include <boost/asio.hpp>
 #include <sys/time.h>
 #include <stdio.h>
-using boost::asio::ip::tcp;
 
+using namespace boost::posix_time;
+using boost::asio::ip::tcp;
 #include "lib.hpp"
 
 int main(int argc, char* argv[])
 {
-    double t1=0;
-    double t2=0;
+    ptime t1,t2;
     std::size_t total;
     try {
         std::cout << "std::size_t: " << sizeof(std::size_t) << std::endl;
@@ -45,11 +45,11 @@ int main(int argc, char* argv[])
         if (error)
             throw boost::system::system_error(error);
 
-        t1=get_ts();
+        t1=get_pts();
         total = recv_data(socket, 10);
-        t2=get_ts();
+        t2=get_pts();
         std::cout << "done" << std::endl;
-        status(t2-t1, total);
+        status(get_diff(t1,t2), total);
     }
     catch (std::exception& e)
     {
