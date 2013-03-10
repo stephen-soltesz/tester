@@ -134,11 +134,9 @@ std::size_t send_data(tcp::socket& socket, int t_length)
     t2 = t1;
     h_sent = 0;
 
-    std::cout << "requested: " << t_length << std::endl;
     while ( get_diff(t1,t2) < t_length ) {
         ret = socket.send(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
-            //std::cout << "ret==0" << std::endl;
             if ( error && error != boost::asio::error::eof) {
                 std::cout << error.message() << std::endl;
             }
@@ -172,11 +170,9 @@ std::size_t recv_data(tcp::socket& socket, int t_length)
     t2 = t1;
     h_recvd = 0;
 
-    std::cout << "requested: " << t_length << std::endl;
     while ( get_diff(t1,t2) < t_length ) {
         ret = socket.receive(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
-            //std::cout << "ret==0" << std::endl;
             if ( error && error != boost::asio::error::eof) {
                 std::cout << error.message() << std::endl;
             }
