@@ -25,7 +25,7 @@ int send_value(tcp::socket& socket, uint32_t value) {
     ret = socket.send(boost::asio::buffer(&n_value, sizeof(n_value)), 0, error);
     if ( ret != sizeof(uint32_t) ) {
         if ( error && error != boost::asio::error::eof) {
-            std::cout << error << std::endl;
+            std::cout << error.message() << std::endl;
         }
         return -1;
     }
@@ -39,7 +39,7 @@ int recv_value(tcp::socket& socket, uint32_t *value) {
     ret = socket.receive(boost::asio::buffer(&n_value, sizeof(n_value)), 0, error);
     if ( ret != sizeof(uint32_t) ) {
         if ( error && error != boost::asio::error::eof) {
-            std::cout << error << std::endl;
+            std::cout << error.message() << std::endl;
         }
         return -1;
     }
@@ -91,7 +91,7 @@ std::size_t send_data(tcp::socket& socket, int t_length)
         if ( ret == 0 ) {
             //std::cout << "ret==0" << std::endl;
             if ( error && error != boost::asio::error::eof) {
-                std::cout << error << std::endl;
+                std::cout << error.message() << std::endl;
             }
             break;
         }
@@ -129,7 +129,7 @@ std::size_t recv_data(tcp::socket& socket, int t_length)
         if ( ret == 0 ) {
             //std::cout << "ret==0" << std::endl;
             if ( error && error != boost::asio::error::eof) {
-                std::cout << error << std::endl;
+                std::cout << error.message() << std::endl;
             }
             break;
         }
