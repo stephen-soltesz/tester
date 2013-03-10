@@ -1,7 +1,6 @@
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
-//#include <sys/time.h>
 #include <stdio.h>
 #include <boost/date_time.hpp>
 
