@@ -11,6 +11,7 @@
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <boost/lexical_cast.hpp>
 #include <stdio.h>
 
 using namespace boost::posix_time;
@@ -19,13 +20,14 @@ using boost::asio::ip::tcp;
 #define _ITERATOR_DEBUG_LEVEL 0
 int main(int argc, char* argv[])
 {
-    ptime t1,t2;
+    ptime       t1,t2;
     std::size_t total;
+    int         value;
     try {
         std::cout << "std::size_t: " << sizeof(std::size_t) << std::endl;
 
         if (argc != 3) {
-            std::cerr << "Usage: client <host>" << std::endl;
+            std::cerr << "Usage: client <host> <time>" << std::endl;
             return 1;
         }            
         boost::asio::io_service io_service;
@@ -33,6 +35,8 @@ int main(int argc, char* argv[])
         tcp::resolver resolver(io_service);
         tcp::resolver::query query(std::string(argv[1]), "1313"); 
         tcp::resolver::iterator end, endpoint_iterator = resolver.resolve(query);
+
+        value = boost::lexical_cast<int>(argv[2]);
 
         tcp::socket socket(io_service);
         boost::system::error_code error = boost::asio::error::host_not_found;
@@ -44,7 +48,8 @@ int main(int argc, char* argv[])
         if (error)
             throw boost::system::system_error(error);
 
-        if ( send_value(socket, 12) != OK ) {
+        std::cout  << "sending: " << value << std::endl;
+        if ( send_value(socket, value) != OK ) {
             std::cout  << "error sending data" << std::endl;
         }
         t1=get_pts();
