@@ -4,19 +4,14 @@ PROJECT(ex CXX)
 
 set(Boost_DEBUG 1)
 
-SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/Program Files/boost/boost_1_51/boost")
-SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files/boost/boost_1_51/lib")
+if(WIN32)
+    SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/Program Files/boost/boost_1_51/boost")
+    SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files/boost/boost_1_51/lib")
+endif(WIN32)
 
 set(Boost_USE_STATIC_LIBS   ON)
 set(Boost_USE_MULTITHREADED ON)
 find_package( Boost COMPONENTS system )
-#find_package( Boost )
-
-# == Using actual libraries from within Boost: ==
-#   find_package( Boost 1.36.0 COMPONENTS date_time filesystem system ... )
-#   if(Boost_FOUND)
-#      target_link_libraries(foo ${Boost_LIBRARIES})
-#   endif()
 
 if (Boost_FOUND) 
     include_directories(${Boost_INCLUDE_DIRS})
@@ -29,6 +24,10 @@ else()
     message(FATAL_ERROR "Could not find boost libraries here!")
 endif()
 
-#add_definitions(-g -O2 -fsigned-char -Wall -Wshadow 
-#		-Wpointer-arith -Wcast-qual -Winline -Werror)
 
+if(WIN32)
+    message("What compiler flags do we want?")
+else()
+    add_definitions(-g -O2 -fsigned-char -Wall -Wshadow 
+		        -Wpointer-arith -Wcast-qual -Winline -Werror)
+endif(WIN32)
