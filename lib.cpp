@@ -45,6 +45,7 @@ std::size_t send_data(tcp::socket& socket, int t_length)
     ptime       t1,t2;
     double      tdiff=0;
     double      last_status = 0;
+
     std::size_t h_sent=0;
     std::size_t ret=0;
 
@@ -59,7 +60,7 @@ std::size_t send_data(tcp::socket& socket, int t_length)
     while ( get_diff(t1,t2) < t_length ) {
         ret = socket.send(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
-            std::cout << "ret==0" << std::endl;
+            //std::cout << "ret==0" << std::endl;
             if ( error && error != boost::asio::error::eof) {
                 std::cout << error << std::endl;
             }
@@ -67,7 +68,7 @@ std::size_t send_data(tcp::socket& socket, int t_length)
         }
         h_sent += ret;
         t2 = get_pts();
-        tdiff = get_diff(t1,t2);
+        tdiff = get_diff(t1, t2);
         if ( last_status + 1 < tdiff ) {
             status(tdiff, h_sent);
             last_status = tdiff;
@@ -77,7 +78,8 @@ std::size_t send_data(tcp::socket& socket, int t_length)
     return h_sent;
 }
 
-std::size_t recv_data(tcp::socket& socket, int t_length) {
+std::size_t recv_data(tcp::socket& socket, int t_length) 
+{
     ptime       t1,t2;
     double      tdiff=0;
     double      last_status = 0;
@@ -85,24 +87,24 @@ std::size_t recv_data(tcp::socket& socket, int t_length) {
     std::size_t h_recvd=0;
     std::size_t ret=0;
 
-    boost::array<char, DATASIZE> data;
-    boost::system::error_code error;
+    boost::array<char, DATASIZE>    data;
+    boost::system::error_code       error;
 
     t1 = get_pts();
     t2 = t1;
     h_recvd = 0;
 
     std::cout << "requested: " << t_length << std::endl;
-    while ( get_diff(t1,t1) < t_length ) {
+    while ( get_diff(t1,t2) < t_length ) {
         ret = socket.receive(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
-            std::cout << "ret==0" << std::endl;
+            //std::cout << "ret==0" << std::endl;
             if ( error && error != boost::asio::error::eof) {
                 std::cout << error << std::endl;
             }
             break;
         }
-        h_recvd = ret + h_recvd;
+        h_recvd += ret;
         t2 = get_pts();
         tdiff = get_diff(t1, t2);
         if ( last_status + 1 < tdiff ) {
