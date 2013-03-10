@@ -1,9 +1,9 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(ex CXX)
 
-set(Boost_USE_STATIC_LIBS   ON)
-set(Boost_USE_MULTITHREADED ON)
-find_package( Boost COMPONENTS system thread )
+#set(Boost_USE_STATIC_LIBS   ON)
+#set(Boost_USE_MULTITHREADED ON)
+find_package( Boost COMPONENTS system )
 #find_package( Boost )
 
 # == Using actual libraries from within Boost: ==
