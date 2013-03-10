@@ -25,7 +25,9 @@ double get_ts() {
 } 
 
 void status(double tdiff, std::size_t amount) {
-    fprintf(stderr, "% 7.3f sec, %8zd bytes -- %7.3f Mbps\n", tdiff, amount, ((8.0*amount)/tdiff)/1.0e6);
+    // convert size_t to %lld for cross-platform compatibility with printf()
+    long long  size = amount;
+    fprintf(stderr, "% 7.3f sec, %8lld bytes -- %7.3f Mbps\n", tdiff, size, ((8.0*size)/tdiff)/1.0e6);
     return;
 }
 
