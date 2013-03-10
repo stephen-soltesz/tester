@@ -13,6 +13,11 @@ double get_ts() {
     return (tv1.tv_sec + tv1.tv_usec/1.0e6);
 } 
 
+int status(double tdiff, std::size_t amount) {
+    fprintf(stderr, "% 7.3f sec, %8zd bytes -- %7.3f Mbps\n", tdiff, amount, ((8.0*amount)/tdiff)/1.0e6);
+    return 0;
+}
+
 int send_data(tcp::socket& socket, int t_length)
 {
     double      t1,t2;
@@ -21,8 +26,8 @@ int send_data(tcp::socket& socket, int t_length)
     std::size_t h_sent=0;
     std::size_t ret=0;
 
-    boost::array<char, DATASIZE> data;
-    boost::system::error_code error;
+    boost::array<char, DATASIZE>    data;
+    boost::system::error_code       error;
 
     t1 = get_ts();
     t2 = t1;
@@ -30,8 +35,6 @@ int send_data(tcp::socket& socket, int t_length)
 
     fprintf(stdout, "requested: %d\n", t_length);
     while ( (t2-t1) < t_length ) {
-        //ret = send(sd, data, sent_length, 0);
-       // boost::asio::write(socket, boost::asio::buffer(buf), boost::asio::transfer_all(), ignored_error);
         ret = socket.send(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
             perror("sending error:");
@@ -41,23 +44,16 @@ int send_data(tcp::socket& socket, int t_length)
             }
             break;
         }
-        //if ( ret == 0 ) {
-        //    fprintf(stderr, "ret==0\n");
-        //    fprintf(stderr, "requested: %d\n", h_length);
-        //    fprintf(stderr, "sent:      %d\n", h_sent);
-        //    break;
-        //}
         h_sent += ret;
         t2 = get_ts();
         tdiff = t2-t1;
         if ( last_status + 1 < tdiff ) {
-            //std::cout << (t2-t1) << " " << t_length << " " << std::endl;
-            //status(tdiff, h_sent);
-            fprintf(stdout, "status: %.6f\n", tdiff);
-            fprintf(stdout, "status: %zd\n", h_sent);
+            status(tdiff, h_sent);
+            //fprintf(stdout, "status: %.6f %zd\n", tdiff, h_sent);
             last_status = tdiff;
         }
     }
+    status(tdiff, h_sent);
     return 0;
 }
 
@@ -78,9 +74,7 @@ int recv_data(tcp::socket& socket, int t_length) {
 
     fprintf(stdout, "requested: %d\n", t_length);
     while ( (t2-t1) < t_length ) {
-        //ret = recv(sd, data, recvd_length , 0);
         ret = socket.receive(boost::asio::buffer(data), 0, error);
-        fprintf(stdout, "ret==%zd\n", ret);
         if ( ret == 0 ) {
             fprintf(stdout, "ret==0\n");
             if ( error ) {
@@ -88,18 +82,15 @@ int recv_data(tcp::socket& socket, int t_length) {
             }
             break;
         }
-        fprintf(stdout, "h_recvd: %zd\n", h_recvd);
         h_recvd = ret + h_recvd;
         t2 = get_ts();
         tdiff = t2-t1;
         if ( last_status + 1 < tdiff ) {
-            //status(tdiff, h_recvd);
-            fprintf(stdout, "status: %.6f\n", tdiff);
-            fprintf(stdout, "status: %zd\n", h_recvd);
+            status(tdiff, h_recvd);
             last_status = tdiff;
         }
     }
-    //status(tdiff, h_recvd);
+    status(tdiff, h_recvd);
 
     return 0;
 }
