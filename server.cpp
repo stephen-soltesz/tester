@@ -58,6 +58,7 @@ int main()
             t2 = get_pts();
             std::cout << "done" << std::endl;
             status(get_diff(t1,t2), total);
+            socket.close();
         }
 
     } catch (std::exception& e) {
