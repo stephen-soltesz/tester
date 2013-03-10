@@ -26,8 +26,13 @@ double get_ts() {
 
 void status(double tdiff, std::size_t amount) {
     // convert size_t to %lld for cross-platform compatibility with printf()
-    long long  size = amount;
-    fprintf(stderr, "% 7.3f sec, %8lld bytes -- %7.3f Mbps\n", tdiff, size, ((8.0*size)/tdiff)/1.0e6);
+    #define STRSIZE 128
+    char buf[128];
+    snprintf(buf, sizeof(buf), "% 7.3f sec, %8lld bytes -- %7.3f Mbps", 
+             tdiff, ((long long)amount), ((8.0*amount)/tdiff)/1.0e6);
+    //fprintf(stderr, "% 7.3f sec, %8lld bytes -- %7.3f Mbps\n", tdiff, ((long long)amount), ((8.0*size)/tdiff)/1.0e6);
+    //fflush(stderr);
+    std::cout << std::string(buf) << std::endl;
     return;
 }
 
