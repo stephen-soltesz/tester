@@ -13,12 +13,12 @@ double get_ts() {
     return (tv1.tv_sec + tv1.tv_usec/1.0e6);
 } 
 
-int status(double tdiff, std::size_t amount) {
+void status(double tdiff, std::size_t amount) {
     fprintf(stderr, "% 7.3f sec, %8zd bytes -- %7.3f Mbps\n", tdiff, amount, ((8.0*amount)/tdiff)/1.0e6);
-    return 0;
+    return;
 }
 
-int send_data(tcp::socket& socket, int t_length)
+std::size_t send_data(tcp::socket& socket, int t_length)
 {
     double      t1,t2;
     double      tdiff=0;
@@ -49,15 +49,14 @@ int send_data(tcp::socket& socket, int t_length)
         tdiff = t2-t1;
         if ( last_status + 1 < tdiff ) {
             status(tdiff, h_sent);
-            //fprintf(stdout, "status: %.6f %zd\n", tdiff, h_sent);
             last_status = tdiff;
         }
     }
     status(tdiff, h_sent);
-    return 0;
+    return h_sent;
 }
 
-int recv_data(tcp::socket& socket, int t_length) {
+std::size_t recv_data(tcp::socket& socket, int t_length) {
     double      t1,t2;
     double      tdiff=0;
     double      last_status = 0;
@@ -91,6 +90,5 @@ int recv_data(tcp::socket& socket, int t_length) {
         }
     }
     status(tdiff, h_recvd);
-
-    return 0;
+    return h_recvd;
 }

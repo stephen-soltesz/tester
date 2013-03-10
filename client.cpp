@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 {
     double t1=0;
     double t2=0;
+    std::size_t total;
     try {
         std::cout << "std::size_t: " << sizeof(std::size_t) << std::endl;
 
@@ -45,20 +46,10 @@ int main(int argc, char* argv[])
             throw boost::system::system_error(error);
 
         t1=get_ts();
-        for (;;)
-        {
-            recv_data(socket, 10);
-            break;
-
-            //if (error == boost::asio::error::eof)
-             //   break; // Connection closed cleanly by peer.
-            //else if (error)
-             //   throw boost::system::system_error(error); // Some other error.
-            //std::cout.write(buf.data(), len);
-        }
+        total = recv_data(socket, 10);
         t2=get_ts();
+        status(t2-t1, total);
         std::cout << "done" << std::endl;
-        printf("ok %.3f %d\n", t2-t1, 1000000);
     }
     catch (std::exception& e)
     {
