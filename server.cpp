@@ -14,6 +14,7 @@
 #include <boost/asio.hpp>
 #include <stdio.h>
 
+using namespace boost::posix_time;
 using boost::asio::ip::tcp;
 #include "lib.hpp"
 
@@ -26,8 +27,7 @@ std::string make_daytime_string()
 
 int main()
 {
-    double t1=0;
-    double t2=0;
+    ptime t1,t2;
     std::size_t total;
     try
     {
@@ -44,11 +44,11 @@ int main()
             //std::string message = make_daytime_string();
             //boost::system::error_code ignored_error;
             printf("staring to send 10M\n");
-            t1 = get_ts();
+            t1 = get_pts();
             total = send_data(socket, 10);
-            t2 = get_ts();
+            t2 = get_pts();
             std::cout << "done" << std::endl;
-            status(t2-t1, total);
+            status(get_diff(t1,t2), total);
             //boost::asio::write(socket, boost::asio::buffer(buf), boost::asio::transfer_all(), ignored_error);
         }
     }
