@@ -43,7 +43,7 @@ int main()
 
             //std::string message = make_daytime_string();
             //boost::system::error_code ignored_error;
-            printf("staring to send 10M\n");
+            std::cout << "staring to send 10M" << std::endl;
             t1 = get_pts();
             total = send_data(socket, 10);
             t2 = get_pts();

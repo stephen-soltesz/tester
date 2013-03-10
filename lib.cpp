@@ -36,8 +36,6 @@ void status(double tdiff, std::size_t amount) {
     char buf[128];
     SNPRINTF(buf, SIZEOF(buf), "% 7.3f sec, %8lld bytes -- %7.3f Mbps", 
              tdiff, ((long long)amount), ((8.0*amount)/tdiff)/1.0e6);
-    //fprintf(stderr, "% 7.3f sec, %8lld bytes -- %7.3f Mbps\n", tdiff, ((long long)amount), ((8.0*size)/tdiff)/1.0e6);
-    //fflush(stderr);
     std::cout << std::string(buf) << std::endl;
     return;
 }
@@ -57,13 +55,12 @@ std::size_t send_data(tcp::socket& socket, int t_length)
     t2 = t1;
     h_sent = 0;
 
-    fprintf(stdout, "requested: %d\n", t_length);
+    std::cout << "requested: " << t_length << std::endl;
     while ( get_diff(t1,t2) < t_length ) {
         ret = socket.send(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
-            perror("sending error:");
-            fprintf(stdout, "ret==0\n");
-            if ( error ) {
+            std::cout << "ret==0" << std::endl;
+            if ( error && error != boost::asio::error::eof) {
                 std::cout << error << std::endl;
             }
             break;
@@ -95,12 +92,12 @@ std::size_t recv_data(tcp::socket& socket, int t_length) {
     t2 = t1;
     h_recvd = 0;
 
-    fprintf(stdout, "requested: %d\n", t_length);
+    std::cout << "requested: " << t_length << std::endl;
     while ( get_diff(t1,t1) < t_length ) {
         ret = socket.receive(boost::asio::buffer(data), 0, error);
         if ( ret == 0 ) {
-            fprintf(stdout, "ret==0\n");
-            if ( error ) {
+            std::cout << "ret==0" << std::endl;
+            if ( error && error != boost::asio::error::eof) {
                 std::cout << error << std::endl;
             }
             break;
