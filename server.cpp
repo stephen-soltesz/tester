@@ -38,6 +38,8 @@ int main()
                 send_version(socket);
                 std::cout  << "failed to recieve current client version" << std::endl;
                 continue;
+            } else {
+                std::cout << "Client version matches server" << std::endl;
             }
             if ( recv_value(socket, &time) != OK ) {
                 std::cout  << "error receiving duration" << std::endl;
