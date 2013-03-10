@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     try {
         std::cout << "std::size_t: " << sizeof(std::size_t) << std::endl;
 
-        if (argc != 3) {
+        if (argc != 4) {
             std::cerr << "Usage: client <host> [up|down] <time>" << std::endl;
             return 1;
         }            
