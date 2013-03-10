@@ -23,12 +23,18 @@ double get_ts() {
     return (tv1.tv_sec + tv1.tv_usec/1.0e6); */
     return 0;
 } 
+#ifdef WIN32
+    #define SIZEOF(x) sizeof(x),1
+    #define SNPRINTF _snprintf_s
+#else
+    #define SIZEOF(x) sizeof(x)
+    #define SNPRINTF snprintf
+#endif
 
 void status(double tdiff, std::size_t amount) {
     // convert size_t to %lld for cross-platform compatibility with printf()
-    #define STRSIZE 128
     char buf[128];
-    snprintf(buf, sizeof(buf), "% 7.3f sec, %8lld bytes -- %7.3f Mbps", 
+    SNPRINTF(buf, SIZEOF(buf), "% 7.3f sec, %8lld bytes -- %7.3f Mbps", 
              tdiff, ((long long)amount), ((8.0*amount)/tdiff)/1.0e6);
     //fprintf(stderr, "% 7.3f sec, %8lld bytes -- %7.3f Mbps\n", tdiff, ((long long)amount), ((8.0*size)/tdiff)/1.0e6);
     //fflush(stderr);
