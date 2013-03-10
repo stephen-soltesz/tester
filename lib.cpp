@@ -24,7 +24,7 @@ double get_ts() {
     return 0;
 } 
 #ifdef WIN32
-    #define SIZEOF(x) sizeof(x),1
+    #define SIZEOF(x) sizeof(x)
     #define SNPRINTF _snprintf_s
 #else
     #define SIZEOF(x) sizeof(x)
