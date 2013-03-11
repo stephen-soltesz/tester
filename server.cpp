@@ -27,7 +27,7 @@ int main()
     try
     {
         boost::asio::io_service io_service;
-        tcp::acceptor           acceptor(io_service, tcp::endpoint(tcp::v6(), 1313));
+        tcp::acceptor           acceptor(io_service, tcp::endpoint(tcp::v4(), 1313));
 
         while (1) 
         {
