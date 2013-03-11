@@ -10,6 +10,7 @@ int         sure_send(tcp::socket& socket, const void *data, std::size_t size);
 int         sure_recv(tcp::socket& socket, void *data, std::size_t size);
 int         check_client_version(tcp::socket& socket);
 int         send_version(tcp::socket& socket);
+int         run_client_test(std::string hostname, int time, int direction);
 #define OK                          0
 #define DATASIZE                    8192
 #define DIRECTION_CLIENT_UPLOAD     1

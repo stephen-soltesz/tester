@@ -189,3 +189,56 @@ std::size_t recv_data(tcp::socket& socket, int t_length)
     status(tdiff, h_recvd);
     return h_recvd;
 }
+
+int run_client_test(std::string hostname, int time, int direction) {
+    ptime                       t1,t2;
+    std::size_t                 total=0;
+    boost::asio::io_service     io_service;
+
+    tcp::resolver               resolver(io_service);
+    tcp::resolver::query        query(hostname, "1313"); 
+    tcp::resolver::iterator     end, endpoint_iterator = resolver.resolve(query);
+    tcp::socket                 socket(io_service);
+    boost::system::error_code   error = boost::asio::error::host_not_found;
+
+    // find a connection that works
+    while (error && endpoint_iterator != end) {
+        socket.close();
+        socket.connect(*endpoint_iterator++, error);
+    }
+    if (error) {
+        //throw boost::system::system_error(error);
+        return 1;
+    }
+
+    std::cout << " <duration>: " << time;
+    std::cout << " <direction>: " << direction << std::endl;
+
+    if ( send_version(socket) != OK ) {
+        std::cout  << "failed to send client version" << std::endl;
+        return 1;
+    }
+    if ( send_value(socket, time) != OK ) {
+        std::cout  << "error sending data" << std::endl;
+        return 1;
+    }
+    if ( send_value(socket, direction) != OK ) {
+        std::cout  << "error sending data" << std::endl;
+        return 1;
+    }
+
+    t1=get_pts();
+    if ( direction == DIRECTION_CLIENT_UPLOAD ) {
+        total = send_data(socket, time);
+    } else if ( direction == DIRECTION_CLIENT_DOWNLOAD ) {
+        total = recv_data(socket, time);
+    } else {
+        std::cerr << "Error: unknown direction: " << direction << std::endl;
+        return 1;
+    }
+    t2=get_pts();
+    std::cout << "done" << std::endl;
+    status(get_diff(t1,t2), total);
+
+    return OK;
+}

@@ -27,26 +27,26 @@ int main()
     try
     {
         boost::asio::io_service io_service;
-        tcp::acceptor           acceptor(io_service, tcp::endpoint(tcp::v4(), 1313));
+        tcp::acceptor           acceptor(io_service, tcp::endpoint(tcp::v6(), 1313));
 
-        for (;;)
+        while (1) 
         {
             tcp::socket         socket(io_service);
             acceptor.accept(socket);
 
             if ( check_client_version(socket) != OK ) {
                 send_version(socket);
-                std::cout  << "failed to recieve current client version" << std::endl;
+                std::cout << "failed to recieve current client version" << std::endl;
                 continue;
             } else {
                 std::cout << "Client version matches server" << std::endl;
             }
             if ( recv_value(socket, &time) != OK ) {
-                std::cout  << "error receiving duration" << std::endl;
+                std::cout << "error receiving duration" << std::endl;
                 continue;
             }
             if ( recv_value(socket, &direction) != OK ) {
-                std::cout  << "error receiving direction" << std::endl;
+                std::cout << "error receiving direction" << std::endl;
                 continue;
             }
             time = min(time, 30);
