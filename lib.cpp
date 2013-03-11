@@ -214,6 +214,12 @@ int run_client_test(std::string hostname, int time, int direction) {
     std::cout << " <duration>: " << time;
     std::cout << " <direction>: " << direction << std::endl;
 
+    if ( check_client_version(socket) != OK ) {
+        std::cout << "failed to recieve current version" << std::endl;
+        return 1;
+    } else {
+        std::cout << "Client version matches server" << std::endl;
+    }
     if ( send_version(socket) != OK ) {
         std::cout  << "failed to send client version" << std::endl;
         return 1;

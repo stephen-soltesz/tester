@@ -34,12 +34,9 @@ int main()
             tcp::socket         socket(io_service);
             acceptor.accept(socket);
 
-            if ( check_client_version(socket) != OK ) {
-                send_version(socket);
-                std::cout << "failed to recieve current client version" << std::endl;
+            if ( send_version(socket) != OK ) {
+                std::cout  << "failed to send version" << std::endl;
                 continue;
-            } else {
-                std::cout << "Client version matches server" << std::endl;
             }
             if ( recv_value(socket, &time) != OK ) {
                 std::cout << "error receiving duration" << std::endl;
