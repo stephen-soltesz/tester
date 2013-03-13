@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
 {
     int         ret;
     int         direction = 0;
+    std::string host;
     try {
         if (argc != 4) {
             std::cerr << "Usage: client <host> [up|down] <duration>" << std::endl;
@@ -37,7 +38,9 @@ int main(int argc, char* argv[])
             std::cerr << "Error: unknown direction: " << argv[2] << std::endl;
             return 1;
         }
-        ret = run_client_test(std::string(argv[1]), 
+        host = std::string(argv[1]);
+        SampleTestClient stc(host);
+        ret = stc.run_client_test(std::string(argv[1]), 
                               boost::lexical_cast<int>(argv[3]), 
                               direction);
         if ( OK != ret ) {
