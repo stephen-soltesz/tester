@@ -20,48 +20,17 @@ using boost::asio::ip::tcp;
 
 int main()
 {
-    ptime t1,t2;
-    std::size_t total;
-    uint32_t time=0;
-    uint32_t direction=0;
     try
     {
         boost::asio::io_service io_service;
         tcp::acceptor           acceptor(io_service, tcp::endpoint(tcp::v4(), 1313));
 
+        SampleTestClient stc("");
         while (1) 
         {
             tcp::socket         socket(io_service);
             acceptor.accept(socket);
-
-            if ( send_version(socket) != OK ) {
-                std::cout  << "failed to send version" << std::endl;
-                continue;
-            }
-            if ( recv_value(socket, &time) != OK ) {
-                std::cout << "error receiving duration" << std::endl;
-                continue;
-            }
-            if ( recv_value(socket, &direction) != OK ) {
-                std::cout << "error receiving direction" << std::endl;
-                continue;
-            }
-            time = min(time, 30);
-            std::cout << "Requested: <time>: " << time << 
-                         " <direction>: " << direction << std::endl;
-
-            t1 = get_pts();
-            if ( direction == DIRECTION_CLIENT_UPLOAD ) {
-                total = recv_data(socket, time);
-            } else if ( direction == DIRECTION_CLIENT_DOWNLOAD ) {
-                total = send_data(socket, time);
-            } else {
-                std::cerr << "Error: unknown direction: " << direction << std::endl;
-                continue;
-            }
-            t2 = get_pts();
-            std::cout << "done" << std::endl;
-            status(get_diff(t1,t2), total);
+            stc.run_server_test(socket);
             socket.close();
         }
 
